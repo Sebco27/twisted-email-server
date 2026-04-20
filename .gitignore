@@ -1,5 +1,10 @@
 # JetBrains IDE files
 .idea/
 
-# Caché de Python
+# Python cache
 __pycache__/
+
+# PGP signature files
+*.asc
+*.sha512
+*.tsr

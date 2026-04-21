@@ -1,5 +1,12 @@
 import argparse
 import csv
+import smtplib
+from email.message import EmailMessage
+
+CLIENT = {
+    "email": "sender@example.com",
+    "name": "SMTP Client"
+}
 
 def main():
     parser = argparse.ArgumentParser(description='SMTP Client', add_help=False)
@@ -8,7 +15,7 @@ def main():
     parser.add_argument("-m", "--message", required=True, help="Message File")
     parser.add_argument("--help", action="help", help="Show help")
     args = parser.parse_args()
-    # sendEmail(args.csv, args.message)
+    sendEmail(args.server, args.csv, args.message)
 
 def personalizeMessage(recipient, messageFile):
     with open(messageFile, "r") as f:
@@ -19,12 +26,17 @@ def personalizeMessage(recipient, messageFile):
         message = template
     return message
 
-def sendEmail(csvEmailsFile, messageFile):
+def sendEmail(smtpServer, csvEmailsFile, messageFile):
     with open(csvEmailsFile) as csvFile:
         recipients = csv.DictReader(csvFile)
-        for recipient in recipients:
-            message = personalizeMessage(recipient, messageFile)
-            # TODO
+        with smtplib.SMTP(smtpServer, 2525, timeout=10) as server:
+            for recipient in recipients:
+                message = EmailMessage()
+                message["From"] = CLIENT["email"]
+                message["To"] = recipient["Email"]
+                message["Subject"] = "Message from " + CLIENT["name"]
+                message.set_content(personalizeMessage(recipient, messageFile))
+                server.send_message(message)
 
 if __name__ == "__main__":
     main()

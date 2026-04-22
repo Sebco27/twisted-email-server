@@ -36,7 +36,10 @@ def sendEmail(smtpServer, csvEmailsFile, messageFile):
                 message["To"] = recipient["Email"]
                 message["Subject"] = "Message from " + CLIENT["name"]
                 message.set_content(personalizeMessage(recipient, messageFile))
-                server.send_message(message)
+                try:
+                    server.send_message(message)
+                except:
+                    print(f"Rejecting mail to {recipient["Email"]}")
 
 if __name__ == "__main__":
     main()

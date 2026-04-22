@@ -5,7 +5,7 @@ from zope.interface import implementer
 
 ENV_PATH = ".env"
 
-def load_users():
+def loadUsers():
     usernames = {}
     with open(ENV_PATH) as f:
         for line in f:
@@ -23,7 +23,8 @@ class UserValidator:
         self.users = users
 
     def requestAvatarId(self, credentials):
-        username = credentials.username.decode()
+        emailAdress = credentials.username.decode()
+        username = emailAdress.split("@")[0]
         password = credentials.password.decode()
         if username in self.users and self.users[username] == password:
             return defer.succeed(username)
